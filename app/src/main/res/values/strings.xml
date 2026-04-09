@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Tiles</string>
+    <string name="todo_title">To Do</string>
+    <string name="history_title">History</string>
+    <string name="add_game_title">Добавить игру</string>
+    <string name="game_title_hint">Название игры</string>
+    <string name="btn_add">Добавить</string>
+    <string name="btn_edit">Изменить</string>
+    <string name="btn_delete">Удалить</string>
+    <string name="btn_save">Сохранить</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="no_items">Список пуст</string>
+    <string name="select_item">Выберите элемент</string>
+    <string name="game_detail_title">Карточка игры</string>
+</resources>

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(qwen *)",
+      "Bash(adb *)"
+    ]
+  },
+  "$version": 3
+}
