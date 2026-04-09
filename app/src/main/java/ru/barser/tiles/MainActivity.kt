@@ -18,18 +18,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.barser.tiles.ui.theme.MyApplicationTheme
+import ru.barser.tiles.R
+import ru.barser.tiles.ui.theme.TilesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            TilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(
                         modifier = Modifier.padding(innerPadding)
@@ -50,7 +52,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Tiles",
+            text = stringResource(R.string.main_title),
             fontSize = 48.sp,
             fontWeight = FontWeight.Bold
         )
@@ -63,7 +65,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             },
             modifier = Modifier
         ) {
-            Text("To do")
+            Text(stringResource(R.string.btn_todo))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -74,7 +76,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             },
             modifier = Modifier
         ) {
-            Text("History")
+            Text(stringResource(R.string.btn_history))
         }
     }
 }
@@ -82,7 +84,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MyApplicationTheme {
+    TilesTheme {
         MainScreen()
     }
 }

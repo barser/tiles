@@ -33,12 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ru.barser.tiles.R
 import ru.barser.tiles.data.GameEntity
-import ru.barser.tiles.ui.theme.MyApplicationTheme
+import ru.barser.tiles.ui.theme.TilesTheme
 import ru.barser.tiles.viewmodel.HistoryViewModel
 
 class HistoryActivity : ComponentActivity() {
@@ -48,7 +50,7 @@ class HistoryActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            TilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     HistoryScreen(
                         modifier = Modifier.padding(innerPadding),
@@ -73,7 +75,7 @@ fun HistoryScreen(modifier: Modifier = Modifier, viewModel: HistoryViewModel) {
             .padding(16.dp)
     ) {
         Text(
-            text = "History",
+            text = stringResource(R.string.history_screen_title),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -86,7 +88,7 @@ fun HistoryScreen(modifier: Modifier = Modifier, viewModel: HistoryViewModel) {
         ) {
             if (items.isEmpty()) {
                 Text(
-                    text = "Пока пусто",
+                    text = stringResource(R.string.history_empty),
                     modifier = Modifier.align(Alignment.Center),
                     fontSize = 18.sp
                 )
@@ -135,20 +137,20 @@ fun HistoryScreen(modifier: Modifier = Modifier, viewModel: HistoryViewModel) {
             Button(
                 onClick = {
                     if (selectedId == null) {
-                        Toast.makeText(context, "Выберите элемент", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.select_item), Toast.LENGTH_SHORT).show()
                         return@Button
                     }
                     showAddResultDialog = true
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Добавить результат")
+                Text(stringResource(R.string.btn_add_result))
             }
 
             Button(
                 onClick = {
                     if (selectedId == null) {
-                        Toast.makeText(context, "Выберите элемент", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.select_item), Toast.LENGTH_SHORT).show()
                         return@Button
                     }
                     val entity = items.find { it.id == selectedId }
@@ -159,7 +161,7 @@ fun HistoryScreen(modifier: Modifier = Modifier, viewModel: HistoryViewModel) {
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Удалить")
+                Text(stringResource(R.string.btn_delete))
             }
         }
     }

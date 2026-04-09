@@ -33,16 +33,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ru.barser.tiles.R
 import ru.barser.tiles.data.GameEntity
 import ru.barser.tiles.data.PlayResultEntity
 import ru.barser.tiles.data.PlayResultStatus
-import ru.barser.tiles.ui.theme.MyApplicationTheme
+import ru.barser.tiles.ui.theme.TilesTheme
 import ru.barser.tiles.viewmodel.GameDetailViewModel
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -59,7 +61,7 @@ class GameDetailActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            TilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     GameDetailScreen(
                         modifier = Modifier.padding(innerPadding),
@@ -90,7 +92,7 @@ fun GameDetailScreen(modifier: Modifier = Modifier, viewModel: GameDetailViewMod
     ) {
         // Название игры
         Text(
-            text = game?.gameTitle ?: "Загрузка...",
+            text = game?.gameTitle ?: stringResource(R.string.game_detail_loading),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -104,7 +106,7 @@ fun GameDetailScreen(modifier: Modifier = Modifier, viewModel: GameDetailViewMod
         ) {
             if (results.isEmpty()) {
                 Text(
-                    text = "Результатов пока нет",
+                    text = stringResource(R.string.game_detail_no_results),
                     modifier = Modifier.align(Alignment.Center),
                     fontSize = 18.sp
                 )
@@ -175,13 +177,13 @@ fun GameDetailScreen(modifier: Modifier = Modifier, viewModel: GameDetailViewMod
                 onClick = { showAddResultDialog = true },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Добавить результат")
+                Text(stringResource(R.string.btn_add_result))
             }
 
             Button(
                 onClick = {
                     if (selectedResultId == null) {
-                        Toast.makeText(context, "Выберите результат", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.toast_select_result), Toast.LENGTH_SHORT).show()
                         return@Button
                     }
                     val entity = results.find { it.id == selectedResultId }
@@ -192,7 +194,7 @@ fun GameDetailScreen(modifier: Modifier = Modifier, viewModel: GameDetailViewMod
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Удалить результат")
+                Text(stringResource(R.string.btn_delete_result))
             }
         }
 
@@ -208,7 +210,7 @@ fun GameDetailScreen(modifier: Modifier = Modifier, viewModel: GameDetailViewMod
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Удалить игру")
+            Text(stringResource(R.string.btn_delete_game))
         }
     }
 

@@ -12,4 +12,33 @@
     <string name="no_items">Список пуст</string>
     <string name="select_item">Выберите элемент</string>
     <string name="game_detail_title">Карточка игры</string>
+
+    <!-- MainActivity -->
+    <string name="main_title">Tiles</string>
+    <string name="btn_todo">To do</string>
+    <string name="btn_history">History</string>
+
+    <!-- ToDoActivity -->
+    <string name="todo_screen_title">To Do</string>
+    <string name="btn_played">Сыграно</string>
+    <string name="dialog_edit_title">Изменить название</string>
+
+    <!-- HistoryActivity -->
+    <string name="history_screen_title">History</string>
+    <string name="history_empty">Пока пусто</string>
+    <string name="btn_add_result">Добавить результат</string>
+
+    <!-- GameDetailActivity -->
+    <string name="game_detail_loading">Загрузка…</string>
+    <string name="game_detail_no_results">Результатов пока нет</string>
+    <string name="btn_delete_result">Удалить результат</string>
+    <string name="btn_delete_game">Удалить игру</string>
+    <string name="toast_select_result">Выберите результат</string>
+
+    <!-- PlayResultDialog -->
+    <string name="play_result_dialog_title">Добавить результат</string>
+    <string name="play_result_datetime_label">Дата и время (дд.мм.гггг чч:мм)</string>
+    <string name="play_result_status_label">Итог</string>
+    <string name="play_result_duration_label">Длительность (мин, необязательно)</string>
+    <string name="play_result_comment_label">Комментарий (необязательно)</string>
 </resources>

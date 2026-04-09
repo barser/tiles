@@ -20,7 +20,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ru.barser.tiles.R
 import ru.barser.tiles.data.PlayResultStatus
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -44,14 +46,14 @@ fun PlayResultDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Добавить результат") },
+        title = { Text(text = stringResource(R.string.play_result_dialog_title)) },
         text = {
             Column {
                 // Дата-время
                 OutlinedTextField(
                     value = dateTimeText,
                     onValueChange = { dateTimeText = it },
-                    label = { Text("Дата и время (дд.мм.гггг чч:мм)") },
+                    label = { Text(stringResource(R.string.play_result_datetime_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -65,7 +67,7 @@ fun PlayResultDialog(
                         value = selectedStatus.displayName,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Итог") },
+                        label = { Text(stringResource(R.string.play_result_status_label)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = statusExpanded) },
                         modifier = Modifier
                             .menuAnchor()
@@ -92,7 +94,7 @@ fun PlayResultDialog(
                 OutlinedTextField(
                     value = durationText,
                     onValueChange = { durationText = it },
-                    label = { Text("Длительность (мин, необязательно)") },
+                    label = { Text(stringResource(R.string.play_result_duration_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -101,7 +103,7 @@ fun PlayResultDialog(
                 OutlinedTextField(
                     value = commentText,
                     onValueChange = { commentText = it },
-                    label = { Text("Комментарий (необязательно)") },
+                    label = { Text(stringResource(R.string.play_result_comment_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 2
                 )
@@ -121,12 +123,12 @@ fun PlayResultDialog(
                     onConfirm(parsed, selectedStatus, duration, comment)
                 }
             ) {
-                Text("Сохранить")
+                Text(stringResource(R.string.btn_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена")
+                Text(stringResource(R.string.btn_cancel))
             }
         }
     )

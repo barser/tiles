@@ -35,14 +35,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ru.barser.tiles.R
 import ru.barser.tiles.data.GameEntity
 import ru.barser.tiles.data.PlayResultStatus
-import ru.barser.tiles.ui.theme.MyApplicationTheme
+import ru.barser.tiles.ui.theme.TilesTheme
 import ru.barser.tiles.viewmodel.ToDoViewModel
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -54,7 +56,7 @@ class ToDoActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            TilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     ToDoScreen(
                         modifier = Modifier.padding(innerPadding),
@@ -84,7 +86,7 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
             .padding(16.dp)
     ) {
         Text(
-            text = "To Do",
+            text = stringResource(R.string.todo_screen_title),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -97,7 +99,7 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
         ) {
             if (items.isEmpty()) {
                 Text(
-                    text = "Список пуст",
+                    text = stringResource(R.string.no_items),
                     modifier = Modifier.align(Alignment.Center),
                     fontSize = 18.sp
                 )
@@ -136,7 +138,7 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
         Button(
             onClick = {
                 if (selectedId == null) {
-                    Toast.makeText(context, "Выберите элемент", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.select_item), Toast.LENGTH_SHORT).show()
                     return@Button
                 }
                 pendingPlayGameId = selectedId
@@ -144,7 +146,7 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сыграно")
+            Text(stringResource(R.string.btn_played))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -157,26 +159,26 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
                 onClick = { showAddDialog = true },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Добавить")
+                Text(stringResource(R.string.btn_add))
             }
 
             Button(
                 onClick = {
                     if (selectedId == null) {
-                        Toast.makeText(context, "Выберите элемент", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.select_item), Toast.LENGTH_SHORT).show()
                         return@Button
                     }
                     showEditDialog = true
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Изменить")
+                Text(stringResource(R.string.btn_edit))
             }
 
             Button(
                 onClick = {
                     if (selectedId == null) {
-                        Toast.makeText(context, "Выберите элемент", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.select_item), Toast.LENGTH_SHORT).show()
                         return@Button
                     }
                     val entity = items.find { it.id == selectedId }
@@ -187,7 +189,7 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Удалить")
+                Text(stringResource(R.string.btn_delete))
             }
         }
     }
@@ -195,7 +197,7 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
     // Dialog добавления
     if (showAddDialog) {
         GameTitleDialog(
-            title = "Добавить игру",
+            title = stringResource(R.string.add_game_title),
             onConfirm = { title ->
                 viewModel.addGame(title)
                 showAddDialog = false
@@ -209,7 +211,7 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
         val entity = items.find { it.id == selectedId }
         if (entity != null) {
             GameTitleDialog(
-                title = "Изменить название",
+                title = stringResource(R.string.dialog_edit_title),
                 initialTitle = entity.gameTitle,
                 onConfirm = { title ->
                     viewModel.updateTitle(selectedId!!, title)
@@ -257,7 +259,7 @@ fun GameTitleDialog(
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
-                label = { Text("Название игры") },
+                label = { Text(stringResource(R.string.game_title_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -271,12 +273,12 @@ fun GameTitleDialog(
                 },
                 enabled = text.isNotBlank()
             ) {
-                Text("Сохранить")
+                Text(stringResource(R.string.btn_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена")
+                Text(stringResource(R.string.btn_cancel))
             }
         }
     )
@@ -285,7 +287,7 @@ fun GameTitleDialog(
 @Preview(showBackground = true)
 @Composable
 fun ToDoScreenPreview() {
-    MyApplicationTheme {
+    TilesTheme {
         // Preview без ViewModel
     }
 }

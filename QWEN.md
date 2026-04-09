@@ -31,7 +31,7 @@ Room DAO → Repository → ViewModel (StateFlow) → Compose UI (collectAsState
 ```
 
 ### Key Components:
-- **GameEntity**: `id` (autoGenerate), `gameTitle`, `description`, `minPlayers`, `maxPlayers`, `rating`
+- **GameEntity**: `id` (autoGenerate), `gameTitle`
 - **PlayResultEntity**: `id` (autoGenerate), `gameId` (FK → games.id, CASCADE delete), `playedAt`, `result` (enum), `score`, `notes`
 - **PlayResultStatus enum**: WIN(Победа), LOSS(Проигрыш), DRAW(Ничья), UNFINISHED(Не доиграли)
 - **To Do** = games with NO play results; **History** = games with ≥1 play result
@@ -151,14 +151,15 @@ Simply open the project root directory in Android Studio. The IDE will automatic
 ## Current Application State
 
 The **Tiles** app is a fully functional board game management application with:
-- Game list management (add, edit, delete games)
+- Game list management (add, edit title, delete games)
 - Play result tracking (win/loss/draw/unfinished)
 - "To Do" list showing games without play results
 - History view showing games with play results
-- Material 3 theming with orange color palette
+- Material 3 theming with orange color palette (theme name: `TilesTheme`)
 - Edge-to-edge display with dynamic color support (Android 12+)
 - Room database for local persistence
 - MVVM architecture with StateFlow and Compose UI
+- All UI strings externalized to `strings.xml` for proper localization support
 
 ## Git & Repository
 
