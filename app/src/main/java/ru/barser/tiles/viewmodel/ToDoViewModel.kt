@@ -44,8 +44,10 @@ class ToDoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addGame(title: String, onResult: (AddGameResult) -> Unit) {
         viewModelScope.launch {
-            val inTodo = gameRepository.isTitleExists(title)
             val inHistory = gameRepository.isTitleInHistory(title)
+            val exists = gameRepository.isTitleExists(title)
+
+            val inTodo = exists && !inHistory
 
             when {
                 inTodo -> onResult(AddGameResult.Duplicate.InTodo)
