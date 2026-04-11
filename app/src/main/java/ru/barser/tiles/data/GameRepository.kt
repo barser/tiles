@@ -23,4 +23,8 @@ class GameRepository(private val dao: GameDao) {
     }
 
     suspend fun getById(id: Int): GameEntity? = dao.getById(id)
+
+    suspend fun isTitleExists(title: String): Boolean = dao.existsByTitle(title) > 0
+
+    suspend fun isTitleInHistory(title: String): Boolean = dao.existsInHistoryByTitle(title) > 0
 }

@@ -15,6 +15,14 @@ import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.OffsetDateTime
 
+sealed interface AddGameResult {
+    data object Success : AddGameResult
+    sealed interface Duplicate : AddGameResult {
+        data object InTodo : Duplicate
+        data object InHistory : Duplicate
+    }
+}
+
 class ToDoViewModel(application: Application) : AndroidViewModel(application) {
     private val gameRepository: GameRepository
     private val playResultRepository: PlayResultRepository
@@ -34,9 +42,21 @@ class ToDoViewModel(application: Application) : AndroidViewModel(application) {
             )
     }
 
-    fun addGame(title: String) {
+    fun addGame(title: String, onResult: (AddGameResult) -> Unit) {
         viewModelScope.launch {
-            gameRepository.createGame(title)
+            val inHistory = gameRepository.isTitleInHistory(title)
+            val exists = gameRepository.isTitleExists(title)
+
+            val inTodo = exists && !inHistory
+
+            when {
+                inTodo -> onResult(AddGameResult.Duplicate.InTodo)
+                inHistory -> onResult(AddGameResult.Duplicate.InHistory)
+                else -> {
+                    gameRepository.createGame(title)
+                    onResult(AddGameResult.Success)
+                }
+            }
         }
     }
 
