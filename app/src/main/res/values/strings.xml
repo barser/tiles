@@ -36,6 +36,7 @@
     <string name="toast_select_result">Выберите результат</string>
 
     <!-- PlayResultDialog -->
+    <string name="play_result_datetime_error">Неверный формат. Используйте дд.мм.гггг чч:мм</string>
     <string name="play_result_dialog_title">Добавить результат</string>
     <string name="play_result_datetime_label">Дата и время (дд.мм.гггг чч:мм)</string>
     <string name="play_result_status_label">Итог</string>

@@ -25,8 +25,11 @@ import androidx.compose.ui.unit.dp
 import ru.barser.tiles.R
 import ru.barser.tiles.data.PlayResultStatus
 import java.time.Duration
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -35,10 +38,12 @@ fun PlayResultDialog(
     onConfirm: (OffsetDateTime, PlayResultStatus, Duration?, String?) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val now = OffsetDateTime.now()
-    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    val now = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.ROOT)
+    val dateTimeErrorMessage = stringResource(R.string.play_result_datetime_error)
 
     var dateTimeText by remember { mutableStateOf(now.format(formatter)) }
+    var dateTimeError by remember { mutableStateOf<String?>(null) }
     var selectedStatus by remember { mutableStateOf(PlayResultStatus.WIN) }
     var durationText by remember { mutableStateOf("") }
     var commentText by remember { mutableStateOf("") }
@@ -52,10 +57,15 @@ fun PlayResultDialog(
                 // Дата-время
                 OutlinedTextField(
                     value = dateTimeText,
-                    onValueChange = { dateTimeText = it },
+                    onValueChange = {
+                        dateTimeText = it
+                        dateTimeError = null // Сбрасываем ошибку при вводе
+                    },
                     label = { Text(stringResource(R.string.play_result_datetime_label)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    isError = dateTimeError != null,
+                    supportingText = dateTimeError?.let { { Text(it) } }
                 )
 
                 // Выпадающий список статуса
@@ -112,10 +122,19 @@ fun PlayResultDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    // Парсим дату
-                    val parsed = runCatching {
-                        OffsetDateTime.parse(dateTimeText, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-                    }.getOrNull() ?: now
+                    // Парсим дату с валидацией
+                    val parseResult = runCatching {
+                        val localDateTime = LocalDateTime.parse(dateTimeText, formatter)
+                        val zoneOffset = ZoneId.systemDefault().rules.getOffset(localDateTime)
+                        localDateTime.atOffset(zoneOffset)
+                    }
+
+                    if (parseResult.isFailure) {
+                        dateTimeError = dateTimeErrorMessage
+                        return@Button
+                    }
+
+                    val parsed = parseResult.getOrThrow()
 
                     val duration = durationText.toIntOrNull()?.let { Duration.ofMinutes(it.toLong()) }
                     val comment = commentText.takeIf { it.isNotBlank() }
