@@ -19,6 +19,9 @@ interface GameDao {
     @Query("SELECT * FROM games WHERE id = :id")
     suspend fun getById(id: Int): GameEntity?
 
+    @Query("SELECT COUNT(*) FROM games WHERE gameTitle = :title")
+    suspend fun existsByTitle(title: String): Int
+
     @Insert
     suspend fun insert(entity: GameEntity): Long
 

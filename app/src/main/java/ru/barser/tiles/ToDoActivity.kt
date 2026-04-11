@@ -52,6 +52,7 @@ import ru.barser.tiles.R
 import ru.barser.tiles.data.GameEntity
 import ru.barser.tiles.data.PlayResultStatus
 import ru.barser.tiles.ui.theme.TilesTheme
+import ru.barser.tiles.viewmodel.AddGameResult
 import ru.barser.tiles.viewmodel.ToDoViewModel
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -212,11 +213,18 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
 
     // Dialog добавления
     if (showAddDialog) {
+        var duplicateError by remember { mutableStateOf(false) }
+
         GameTitleDialog(
             title = stringResource(R.string.add_game_title),
+            duplicateError = duplicateError,
             onConfirm = { title ->
-                viewModel.addGame(title)
-                showAddDialog = false
+                viewModel.addGame(title) { result ->
+                    when (result) {
+                        AddGameResult.Success -> showAddDialog = false
+                        AddGameResult.Duplicate -> duplicateError = true
+                    }
+                }
             },
             onDismiss = { showAddDialog = false }
         )
@@ -263,10 +271,15 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
 fun GameTitleDialog(
     title: String,
     initialTitle: String = "",
+    duplicateError: Boolean = false,
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
     var text by remember { mutableStateOf(initialTitle) }
+    val errorMessage = stringResource(R.string.game_title_duplicate_error)
+
+    // Сбрасываем ошибку при вводе
+    val effectiveError = if (duplicateError) errorMessage else null
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -277,7 +290,9 @@ fun GameTitleDialog(
                 onValueChange = { text = it },
                 label = { Text(stringResource(R.string.game_title_hint)) },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                isError = effectiveError != null,
+                supportingText = effectiveError?.let { { Text(it) } }
             )
         },
         confirmButton = {
