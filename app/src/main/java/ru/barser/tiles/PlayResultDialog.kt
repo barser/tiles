@@ -37,8 +37,10 @@ fun PlayResultDialog(
 ) {
     val now = OffsetDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    val dateTimeErrorMessage = stringResource(R.string.play_result_datetime_error)
 
     var dateTimeText by remember { mutableStateOf(now.format(formatter)) }
+    var dateTimeError by remember { mutableStateOf<String?>(null) }
     var selectedStatus by remember { mutableStateOf(PlayResultStatus.WIN) }
     var durationText by remember { mutableStateOf("") }
     var commentText by remember { mutableStateOf("") }
@@ -52,10 +54,15 @@ fun PlayResultDialog(
                 // Дата-время
                 OutlinedTextField(
                     value = dateTimeText,
-                    onValueChange = { dateTimeText = it },
+                    onValueChange = {
+                        dateTimeText = it
+                        dateTimeError = null // Сбрасываем ошибку при вводе
+                    },
                     label = { Text(stringResource(R.string.play_result_datetime_label)) },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    isError = dateTimeError != null,
+                    supportingText = dateTimeError?.let { { Text(it) } }
                 )
 
                 // Выпадающий список статуса
@@ -112,10 +119,17 @@ fun PlayResultDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    // Парсим дату
-                    val parsed = runCatching {
+                    // Парсим дату с валидацией
+                    val parseResult = runCatching {
                         OffsetDateTime.parse(dateTimeText, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-                    }.getOrNull() ?: now
+                    }
+
+                    if (parseResult.isFailure) {
+                        dateTimeError = dateTimeErrorMessage
+                        return@Button
+                    }
+
+                    val parsed = parseResult.getOrNull() ?: now
 
                     val duration = durationText.toIntOrNull()?.let { Duration.ofMinutes(it.toLong()) }
                     val comment = commentText.takeIf { it.isNotBlank() }
