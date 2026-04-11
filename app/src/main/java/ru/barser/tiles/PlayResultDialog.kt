@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import ru.barser.tiles.R
 import ru.barser.tiles.data.PlayResultStatus
 import java.time.Duration
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -36,7 +38,7 @@ fun PlayResultDialog(
     onConfirm: (OffsetDateTime, PlayResultStatus, Duration?, String?) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val now = OffsetDateTime.now()
+    val now = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.ROOT)
     val dateTimeErrorMessage = stringResource(R.string.play_result_datetime_error)
 
@@ -122,7 +124,9 @@ fun PlayResultDialog(
                 onClick = {
                     // Парсим дату с валидацией
                     val parseResult = runCatching {
-                        OffsetDateTime.parse(dateTimeText, formatter)
+                        val localDateTime = LocalDateTime.parse(dateTimeText, formatter)
+                        val zoneOffset = ZoneId.systemDefault().rules.getOffset(localDateTime)
+                        localDateTime.atOffset(zoneOffset)
                     }
 
                     if (parseResult.isFailure) {
@@ -130,7 +134,7 @@ fun PlayResultDialog(
                         return@Button
                     }
 
-                    val parsed = parseResult.getOrNull() ?: now
+                    val parsed = parseResult.getOrThrow()
 
                     val duration = durationText.toIntOrNull()?.let { Duration.ofMinutes(it.toLong()) }
                     val comment = commentText.takeIf { it.isNotBlank() }
