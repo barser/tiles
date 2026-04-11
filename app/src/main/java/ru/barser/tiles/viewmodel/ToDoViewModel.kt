@@ -17,7 +17,10 @@ import java.time.OffsetDateTime
 
 sealed interface AddGameResult {
     data object Success : AddGameResult
-    data object Duplicate : AddGameResult
+    sealed interface Duplicate : AddGameResult {
+        data object InTodo : Duplicate
+        data object InHistory : Duplicate
+    }
 }
 
 class ToDoViewModel(application: Application) : AndroidViewModel(application) {
@@ -41,11 +44,16 @@ class ToDoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addGame(title: String, onResult: (AddGameResult) -> Unit) {
         viewModelScope.launch {
-            if (gameRepository.isTitleExists(title)) {
-                onResult(AddGameResult.Duplicate)
-            } else {
-                gameRepository.createGame(title)
-                onResult(AddGameResult.Success)
+            val inTodo = gameRepository.isTitleExists(title)
+            val inHistory = gameRepository.isTitleInHistory(title)
+
+            when {
+                inTodo -> onResult(AddGameResult.Duplicate.InTodo)
+                inHistory -> onResult(AddGameResult.Duplicate.InHistory)
+                else -> {
+                    gameRepository.createGame(title)
+                    onResult(AddGameResult.Success)
+                }
             }
         }
     }

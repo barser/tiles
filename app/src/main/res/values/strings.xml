@@ -4,7 +4,8 @@
     <string name="history_title">History</string>
     <string name="add_game_title">Добавить игру</string>
     <string name="game_title_hint">Название игры</string>
-    <string name="game_title_duplicate_error">Игра с таким именем уже есть в списке</string>
+    <string name="game_title_duplicate_error_todo">Игра с таким названием уже есть в списке To Do</string>
+    <string name="game_title_duplicate_error_history">Игра с таким названием уже есть в списке **сыгранных**</string>
     <string name="btn_add">Добавить</string>
     <string name="btn_edit">Изменить</string>
     <string name="btn_delete">Удалить</string>

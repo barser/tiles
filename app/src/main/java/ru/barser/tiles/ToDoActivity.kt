@@ -34,6 +34,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.withStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +57,8 @@ import ru.barser.tiles.data.GameEntity
 import ru.barser.tiles.data.PlayResultStatus
 import ru.barser.tiles.ui.theme.TilesTheme
 import ru.barser.tiles.viewmodel.AddGameResult
+import ru.barser.tiles.viewmodel.AddGameResult.Duplicate.InHistory
+import ru.barser.tiles.viewmodel.AddGameResult.Duplicate.InTodo
 import ru.barser.tiles.viewmodel.ToDoViewModel
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -213,7 +219,9 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
 
     // Dialog добавления
     if (showAddDialog) {
-        var duplicateError by remember { mutableStateOf(false) }
+        var duplicateError by remember { mutableStateOf<String?>(null) }
+        val errorTodo = stringResource(R.string.game_title_duplicate_error_todo)
+        val errorHistory = stringResource(R.string.game_title_duplicate_error_history)
 
         GameTitleDialog(
             title = stringResource(R.string.add_game_title),
@@ -222,7 +230,8 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
                 viewModel.addGame(title) { result ->
                     when (result) {
                         AddGameResult.Success -> showAddDialog = false
-                        AddGameResult.Duplicate -> duplicateError = true
+                        InTodo -> duplicateError = errorTodo
+                        InHistory -> duplicateError = errorHistory
                     }
                 }
             },
@@ -271,15 +280,14 @@ fun ToDoScreen(modifier: Modifier = Modifier, viewModel: ToDoViewModel) {
 fun GameTitleDialog(
     title: String,
     initialTitle: String = "",
-    duplicateError: Boolean = false,
+    duplicateError: String? = null,
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
     var text by remember { mutableStateOf(initialTitle) }
-    val errorMessage = stringResource(R.string.game_title_duplicate_error)
 
     // Сбрасываем ошибку при вводе
-    val effectiveError = if (duplicateError) errorMessage else null
+    val effectiveError = duplicateError
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -292,7 +300,9 @@ fun GameTitleDialog(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 isError = effectiveError != null,
-                supportingText = effectiveError?.let { { Text(it) } }
+                supportingText = effectiveError?.let { errorText ->
+                    { ErrorText(text = errorText) }
+                }
             )
         },
         confirmButton = {
@@ -313,6 +323,25 @@ fun GameTitleDialog(
             }
         }
     )
+}
+
+@Composable
+private fun ErrorText(text: String) {
+    val annotatedString = buildAnnotatedString {
+        val italicPattern = Regex("\\*\\*(.+?)\\*\\*")
+        var lastIndex = 0
+        italicPattern.findAll(text).forEach { match ->
+            append(text.substring(lastIndex, match.range.first))
+            withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+                append(match.groupValues[1])
+            }
+            lastIndex = match.range.last + 1
+        }
+        if (lastIndex < text.length) {
+            append(text.substring(lastIndex))
+        }
+    }
+    Text(annotatedString)
 }
 
 @Preview(showBackground = true)
