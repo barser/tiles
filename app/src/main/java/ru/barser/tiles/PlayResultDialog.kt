@@ -27,6 +27,7 @@ import ru.barser.tiles.data.PlayResultStatus
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -36,7 +37,7 @@ fun PlayResultDialog(
     onDismiss: () -> Unit
 ) {
     val now = OffsetDateTime.now()
-    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.ROOT)
     val dateTimeErrorMessage = stringResource(R.string.play_result_datetime_error)
 
     var dateTimeText by remember { mutableStateOf(now.format(formatter)) }
@@ -121,7 +122,7 @@ fun PlayResultDialog(
                 onClick = {
                     // Парсим дату с валидацией
                     val parseResult = runCatching {
-                        OffsetDateTime.parse(dateTimeText, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+                        OffsetDateTime.parse(dateTimeText, formatter)
                     }
 
                     if (parseResult.isFailure) {
